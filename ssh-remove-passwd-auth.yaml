@@ -1,6 +1,7 @@
 ---
 - hosts: all
   become: yes
+
   tasks:
     - name: Désactiver l'authentification par mot de passe SSH
       lineinfile:
@@ -8,8 +9,8 @@
         regexp: '^#?PasswordAuthentication'
         line: 'PasswordAuthentication no'
         state: present
+  handlers:
     - name: Redémarrer SSH
-      handlers:
-        service:
-          name: ssh
-          state: restarted
+      service:
+        name: ssh
+        state: restarted
