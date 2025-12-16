@@ -9,7 +9,7 @@
         line: 'PasswordAuthentication no'
         state: present
       handlers:
-        - name: Redémarrer SSH
-          service:
-            name: ssh
-            state: restarted
+      - name: Redémarrer SSH
+        service:
+          name: ssh
+          state: restarted
