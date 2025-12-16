@@ -1,6 +1,7 @@
 ---
 - hosts: all
   become: yes
+  tasks:
     - name: Désactiver l'authentification par mot de passe SSH
       lineinfile:
         path: /etc/ssh/sshd_config
