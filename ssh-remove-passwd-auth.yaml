@@ -8,8 +8,8 @@
         regexp: '^#?PasswordAuthentication'
         line: 'PasswordAuthentication no'
         state: present
+    - name: Redémarrer SSH
       handlers:
-      - name: Redémarrer SSH
         service:
           name: ssh
           state: restarted
