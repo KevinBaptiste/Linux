@@ -1,0 +1,110 @@
+#!/bin/bash
+
+echo "=========================================="
+echo "  Network Monitor - Tests de validation"
+echo "=========================================="
+echo ""
+
+# Fonction de test
+test_step() {
+    local name=$1
+    local command=$2
+    
+    echo -n "🔍 Test: $name ... "
+    if eval "$command" &>/dev/null; then
+        echo "✅ OK"
+        return 0
+    else
+        echo "❌ ÉCHEC"
+        return 1
+    fi
+}
+
+# Compteur de tests
+total=0
+passed=0
+
+# Tests des dépendances système
+echo "--- Tests des dépendances système ---"
+test_step "Docker installé" "command -v docker" && ((passed++))
+((total++))
+
+test_step "Docker Compose installé" "command -v docker-compose" && ((passed++))
+((total++))
+
+test_step "Python 3 disponible" "command -v python3" && ((passed++))
+((total++))
+
+echo ""
+echo "--- Tests des outils réseau ---"
+test_step "arp disponible" "command -v arp" && ((passed++))
+((total++))
+
+test_step "arp-scan disponible (optionnel)" "command -v arp-scan" && ((passed++)) || echo "ℹ️  arp-scan n'est pas installé (optionnel, arp sera utilisé)"
+((total++))
+
+test_step "systemctl disponible" "command -v systemctl" && ((passed++))
+((total++))
+
+test_step "journalctl disponible" "command -v journalctl" && ((passed++))
+((total++))
+
+echo ""
+echo "--- Tests des fichiers du projet ---"
+test_step "app.py existe" "[ -f app.py ]" && ((passed++))
+((total++))
+
+test_step "Dockerfile existe" "[ -f Dockerfile ]" && ((passed++))
+((total++))
+
+test_step "docker-compose.yml existe" "[ -f docker-compose.yml ]" && ((passed++))
+((total++))
+
+test_step "templates/dashboard.html existe" "[ -f templates/dashboard.html ]" && ((passed++))
+((total++))
+
+test_step "requirements.txt existe" "[ -f requirements.txt ]" && ((passed++))
+((total++))
+
+echo ""
+echo "--- Tests du conteneur Docker (si lancé) ---"
+if docker ps | grep -q network_monitor; then
+    test_step "Conteneur en cours d'exécution" "docker ps | grep -q network_monitor" && ((passed++))
+    ((total++))
+    
+    test_step "Port 5000 accessible" "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000 | grep -q 200" && ((passed++))
+    ((total++))
+    
+    test_step "API /api/data répond" "curl -s http://localhost:5000/api/data | grep -q 'devices'" && ((passed++))
+    ((total++))
+    
+    test_step "API /api/health répond" "curl -s http://localhost:5000/api/health | grep -q 'ok'" && ((passed++))
+    ((total++))
+else
+    echo "ℹ️  Conteneur non lancé, démarrez avec: docker-compose up -d"
+    total=$((total + 4))
+fi
+
+echo ""
+echo "=========================================="
+echo "📊 Résultats des tests"
+echo "=========================================="
+echo "✅ Tests réussis: $passed/$total"
+echo "❌ Tests échoués: $((total - passed))/$total"
+
+if [ $passed -eq $total ]; then
+    echo ""
+    echo "🎉 Tous les tests sont passés !"
+    echo "L'application est prête à être utilisée."
+    exit 0
+elif [ $passed -ge $((total * 75 / 100)) ]; then
+    echo ""
+    echo "⚠️  La plupart des tests sont OK, mais quelques problèmes détectés."
+    echo "L'application devrait fonctionner avec des limitations."
+    exit 0
+else
+    echo ""
+    echo "❌ Plusieurs tests ont échoué."
+    echo "Vérifiez l'installation et les dépendances."
+    exit 1
+fi

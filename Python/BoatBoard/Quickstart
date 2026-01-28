@@ -1,0 +1,149 @@
+# 🚀 Guide de Démarrage Rapide
+
+## Installation en 3 étapes
+
+### 1️⃣ Télécharger les fichiers
+Téléchargez et extrayez tous les fichiers dans un dossier, par exemple :
+```bash
+mkdir ~/network-monitor
+cd ~/network-monitor
+# Copiez tous les fichiers ici
+```
+
+### 2️⃣ Lancer l'application
+```bash
+chmod +x start.sh
+./start.sh
+```
+
+### 3️⃣ Accéder au dashboard
+Ouvrez votre navigateur : **http://localhost:5000**
+
+---
+
+## 🎯 Commandes essentielles
+
+### Démarrer
+```bash
+docker-compose up -d
+```
+
+### Arrêter
+```bash
+docker-compose down
+```
+
+### Voir les logs
+```bash
+docker-compose logs -f
+```
+
+### Redémarrer
+```bash
+docker-compose restart
+```
+
+### Tester l'installation
+```bash
+./test.sh
+```
+
+---
+
+## 📊 URLs importantes
+
+- **Dashboard** : http://localhost:5000
+- **API données** : http://localhost:5000/api/data
+- **Health check** : http://localhost:5000/api/health
+
+---
+
+## ⚙️ Configuration (optionnelle)
+
+Copiez `.env.example` vers `.env` et modifiez :
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+Variables principales :
+- `UPDATE_INTERVAL=2` - Fréquence de mise à jour (secondes)
+- `SPEEDTEST_INTERVAL=300` - Fréquence speedtest (secondes)
+- `ENABLE_SPEEDTEST=true` - Activer/désactiver speedtest
+- `PORT=5000` - Port du serveur
+
+---
+
+## 🐛 Dépannage rapide
+
+### Le dashboard ne s'affiche pas
+```bash
+# Vérifier que le conteneur tourne
+docker ps | grep network_monitor
+
+# Voir les erreurs
+docker-compose logs
+```
+
+### Pas d'appareils détectés
+```bash
+# Le conteneur doit être en mode privileged et host network
+# Vérifier docker-compose.yml :
+# - privileged: true
+# - network_mode: "host"
+```
+
+### Speedtest ne fonctionne pas
+```bash
+# Désactiver temporairement dans .env
+echo "ENABLE_SPEEDTEST=false" > .env
+docker-compose restart
+```
+
+### Erreur de permission
+```bash
+# Donner les droits
+chmod +x start.sh test.sh
+```
+
+---
+
+## 📚 Documentation complète
+
+- **README.md** - Documentation complète
+- **CHANGELOG.md** - Liste des améliorations
+- **Cette page** - Guide rapide
+
+---
+
+## 🎨 Aperçu de l'interface
+
+L'interface est divisée en 4 zones :
+
+1. **Gauche** - Appareils connectés, IP serveur, services
+2. **Centre** - Radar animé avec visualisation des appareils
+3. **Droite** - Speedtest, CPU, RAM
+4. **Bas** - Logs système journalctl
+
+---
+
+## 💡 Astuces
+
+- Le premier speedtest peut prendre 30-60 secondes
+- Les appareils sont colorés selon leur type sur le radar
+- Les logs défilent automatiquement
+- L'interface se met à jour en temps réel via WebSocket
+
+---
+
+## 📞 Support
+
+En cas de problème :
+1. Lancer `./test.sh` pour diagnostiquer
+2. Consulter les logs : `docker-compose logs -f`
+3. Vérifier README.md section "Dépannage"
+
+---
+
+**Profitez de votre dashboard de surveillance réseau ! 🎉**

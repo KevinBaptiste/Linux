@@ -1,0 +1,9 @@
+root@localhost:~/docker/compose# cat /etc/wireguard/wg0.conf 
+[Interface]
+PrivateKey = KDti7mlqdQkQ3G+eeYtasLEFij9MGw3EjOehm4oM10M=
+ListenPort = 51820
+Address = 10.0.0.2/24
+
+[Peer]
+PublicKey = yNUfFB/WU+LngRuJQTyom4uMqqSRkgxY7BwtLz+v5H0=
+AllowedIPs = 10.0.0.1/32

@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  network-monitor:
+    build: .
+    container_name: network_monitor
+    ports:
+      - "5000:5000"
+    volumes:
+      - /var/log/journal:/var/log/journal:ro
+      - /run/systemd:/run/systemd:ro
+    network_mode: "host"
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
